@@ -70,15 +70,18 @@ class ImageDrawer:
         contour_img = np.zeros(self.original_img.shape[:2], dtype=np.uint8)
         cv2.drawContours(contour_img, [bezier_contour], -1, 255, thickness=cv2.FILLED)
         filename = f"{self.image_path.split('.')[0]}_label.png"
-        contour_img_to_save = cv2.resize(contour_img, self.original_img_size)
+        kernel = np.ones((3, 3), np.uint8)
+        cleaned_image = cv2.morphologyEx(contour_img, cv2.MORPH_OPEN, kernel)
+        cv2.imwrite("cleange.png", cleaned_image)
+        contour_img_to_save = cv2.resize(cleaned_image, self.original_img_size)
         contour_img_to_save = cv2.threshold(contour_img_to_save, 127, 255, cv2.THRESH_BINARY)[1]
-
         cv2.imwrite(filename, contour_img_to_save)
         print(f"Contour image saved: {filename}")
-        cv2.imshow("Saved Contour", contour_img)
+        cv2.imshow("Saved Contour", cleaned_image)
+
 
     def run(self):
-        cv2.namedWindow('image')
+        cv2.namedWindow('PhenoPixel')
         cv2.setMouseCallback('image', self.draw_point)
 
         while True:
