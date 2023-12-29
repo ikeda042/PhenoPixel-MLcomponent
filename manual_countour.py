@@ -95,6 +95,5 @@ class ImageDrawer:
 
         cv2.destroyAllWindows()
 
-# 使用例
 drawer = ImageDrawer('0.png')
 drawer.run()
